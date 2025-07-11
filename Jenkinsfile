@@ -15,7 +15,7 @@ pipeline{
             }
         }
 
-        tage('Setting up over virtual environment and installing dependencies'){
+        stage('Setting up over virtual environment and installing dependencies'){
             steps{
                 script{
                     echo 'Setting up over virtual environment and installing dependencies.....'
