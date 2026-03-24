@@ -1,30 +1,132 @@
 # Hotel Reservation Prediction
 
-A machine learning project that predicts hotel booking cancellations using a complete MLOps pipeline with data ingestion, preprocessing, model training, and a web interface for predictions.
+Predict cancellations for hotel reservations using machine learning. This project provides a complete pipeline and web interface for building, deploying, and serving ML models to predict whether a reservation will be canceled, based on customer and booking features.
 
-## Overview
+## Features
 
-This project implements an end-to-end machine learning solution for predicting whether a hotel reservation will be cancelled. It demonstrates best practices in MLOps, including data engineering, feature engineering, model training with hyperparameter tuning, experiment tracking, and containerized deployment.
+- **End-to-End ML Pipeline**: Automated data ingestion, preprocessing, and model training.
+- **Web Application**: Flask-based interface for real-time predictions.
+- **Reproducible Environment**: Dockerized for consistent development and deployment.
+- **CI/CD Integration**: Jenkins pipeline for automated builds and deployment.
+- **Experiment Tracking**: MLflow support for managing experiments.
+- **LightGBM & scikit-learn Models**: Modern and efficient ML algorithms.
+- **Cloud & Local Support**: Ready to run on-premises or in the cloud (Google Cloud support scripts included).
 
-## Problem Statement
+## Directory Structure
 
-Hotel cancellations are a significant challenge in the hospitality industry, affecting revenue planning and resource allocation. This project builds a predictive model to identify likely cancellations based on reservation characteristics, enabling proactive business decisions.
+```
+.
+├── application.py         # Flask app serving the ML model
+├── src/                   # Core modules (data ingestion, preprocessing, model training)
+├── notebook/              # Jupyter notebook(s) for EDA and prototyping
+├── pipeline/              # Pipeline scripts (e.g., training_pipeline.py)
+├── config/                # Configuration files and path configs
+├── requirements.txt       # Python dependencies
+├── Dockerfile             # Container build for app and training
+├── Jenkinsfile            # CI/CD build instructions
+├── templates/             # HTML files for the Flask app
+└── static/                # Static web resources
+```
 
-## Key Features
+## Installation
 
-- **Complete ML Pipeline**: Automated data ingestion, preprocessing, feature engineering, and model training
-- **Data Processing**: 
-  - Label encoding for categorical features
-  - Skewness handling for numerical features
-  - SMOTE-based class balancing to handle imbalanced data
-  - Automated feature selection using Random Forest importance
-- **Model Training**: LightGBM classifier with hyperparameter tuning via RandomizedSearchCV
-- **Experiment Tracking**: MLflow integration for logging parameters, metrics, and artifacts
-- **Web Interface**: Flask-based application for real-time predictions
-- **Containerization**: Docker support with automated model training
-- **CI/CD Pipeline**: Jenkins integration for automated build, test, and deployment to Google Cloud Run
+**Requirements:**
+- Python 3.8+
+- [Docker](https://www.docker.com/) (recommended for deployment)
+- (Optional) Google Cloud credentials for cloud storage
 
-## Project Structure
+**Clone the repository:**
+```bash
+git clone https://github.com/Devmangukiya/Hotel_Reservation_Prediction.git
+cd Hotel_Reservation_Prediction
+```
 
-Hotel_Reservation_Prediction/ ├── src/ # Core ML pipeline modules │ ├── data_ingestion.py # Download and split data from GCP Storage │ ├── data_preprocessing.py # Feature engineering and data preparation │ ├── model_training.py # Model training with hyperparameter tuning │ ├── custom_exception.py # Custom exception handling │ └── logger.py # Logging configuration ├── pipeline/ │ └── training_pipeline.py # Orchestrates the complete ML pipeline ├── config/ │ ├── config.yaml # Data and feature configuration │ ├── model_params.py # LightGBM hyperparameter distributions │ └── path_config.py # Artifact and data paths ├── utils/ │ └── common_fuctions.py # Utility functions (YAML reading, data loading) ├── templates/ │ └── index.html # Web interface for predictions ├── application.py # Flask web application ├── Dockerfile # Container configuration ├── Jenkinsfile # CI/CD pipeline configuration ├── requirements.txt # Python dependencies ├── setup.py # Package setup configuration └── notebook/ # Jupyter notebook and training data
+**Run with Docker (Recommended):**
+Builds the container, installs dependencies, trains the model, and launches the web app on port 8080.
 
+```bash
+docker build -t hotel-reservation-prediction .
+docker run -p 8080:8080 hotel-reservation-prediction
+```
+
+**Manual (Local) Setup:**
+1. Install dependencies:
+    ```bash
+    pip install -r requirements.txt
+    ```
+
+2. Train the model:
+    ```bash
+    python pipeline/training_pipeline.py
+    ```
+
+3. Start the web application:
+    ```bash
+    python application.py
+    ```
+    Then access the app at [http://localhost:8080](http://localhost:8080)
+
+## Usage
+
+- Open the web interface.
+- Input required reservation details (lead time, price, booking details, etc.).
+- The app predicts if the reservation is likely to be canceled.
+
+## Example Code (Web Inference)
+```python
+# application.py (snippet)
+@app.route('/', methods=['GET', 'POST'])
+def index():
+    if request.method == 'POST':
+        # Parse submitted form data
+        features = np.array([[...]])
+        prediction = loaded_model.predict(features)
+        return render_template('index.html', prediction=prediction[0])
+    return render_template('index.html', prediction=None)
+```
+
+## Notebooks
+
+- Main experiments and exploratory analysis are inside `notebook/notebook.ipynb`.
+
+## ML Pipeline
+
+Core pipeline code is in `src/`:
+- `data_ingestion.py` — Load and split data sets
+- `data_preprocessing.py` — Clean and preprocess data (handle missing, encode categoricals)
+- `model_training.py` — Train LightGBM/scikit-learn classifiers and save the final model
+- `custom_exception.py`, `logger.py` — Logging & error handling utilities
+
+## Configuration
+
+Edit values in `config/` for paths, model saving locations, or environment toggles.
+
+## CI/CD
+
+A `Jenkinsfile` automates building, testing, training, and deployment. Includes cloud environment step scripts and Docker image management for seamless CI on Jenkins.
+
+## Requirements
+
+```text
+pandas
+numpy
+scikit-learn
+lightgbm
+imbalanced-learn
+mlflow
+flask
+pyyaml
+google-cloud-storage
+```
+
+## License
+
+See LICENSE file or repository details.
+
+## Authors
+
+Maintained by [Devmangukiya](https://github.com/Devmangukiya/).
+
+---
+
+*For issues, please open a GitHub issue or pull request.*
